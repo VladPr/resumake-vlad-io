@@ -4,6 +4,9 @@ import { pdfjs, Document, Page } from 'react-pdf'
 import type { PDFDocumentProxy } from 'pdfjs-dist/types/src/display/api'
 import styled from 'styled-components'
 import { resumeAtom } from '../../atoms/resume'
+import { MiniButton } from '../core/Button'
+import getTemplateData from '../../lib/templates'
+import { FormValues } from '../../types'
 
 const workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
 pdfjs.GlobalWorkerOptions.workerSrc = workerSrc
@@ -13,6 +16,29 @@ const Output = styled.output`
   background: ${(props) => props.theme.lightBlack};
   overflow-y: auto;
 `
+
+const Toolbar = styled.div`
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  flex-wrap: wrap;
+`
+
+function downloadFile(filename: string, content: string, type: string) {
+  const url = URL.createObjectURL(new Blob([content], { type }))
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+  URL.revokeObjectURL(url)
+}
+
+function getFormValues(): FormValues | null {
+  const stored = localStorage.getItem('jsonResume')
+  return stored ? (JSON.parse(stored) as FormValues) : null
+}
 
 const PdfContainer = styled.article`
   width: 100%;
@@ -45,9 +71,38 @@ export function Preview() {
     setPageCount(pdf.numPages)
   }, [])
 
+  const exportPdf = useCallback(() => {
+    if (resume.url) {
+      window.open(resume.url)
+    }
+  }, [resume.url])
+
+  const exportTex = useCallback(() => {
+    const formValues = getFormValues()
+    if (!formValues) return
+    const { texDoc } = getTemplateData(formValues)
+    downloadFile('resume.tex', texDoc, 'application/x-tex')
+  }, [])
+
+  const exportJson = useCallback(() => {
+    const formValues = getFormValues()
+    if (!formValues) return
+    downloadFile(
+      'resume.json',
+      JSON.stringify(formValues, null, 2),
+      'application/json'
+    )
+  }, [])
+
   return (
     <Output>
-      <button onClick={() => window.open(resume.url)}>export as pdf</button>
+      <Toolbar>
+        <MiniButton onClick={exportPdf} disabled={!resume.url}>
+          export as pdf
+        </MiniButton>
+        <MiniButton onClick={exportTex}>export as tex</MiniButton>
+        <MiniButton onClick={exportJson}>export as json</MiniButton>
+      </Toolbar>
       <PdfContainer>
         <ResumeDocument
           file={resume.url || '/blank.pdf'}
