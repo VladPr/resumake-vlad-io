@@ -75,8 +75,8 @@ async function resolveAssets(urls: string[]) {
   return zip(basenames, assets)
 }
 
-function basename(url: string) {
-  return url.split('/').pop()
+function basename(url: string): string {
+  return url.split('/').pop() ?? url
 }
 
 function zip<T, U>(a: T[], b: U[]): [T, U][] {
