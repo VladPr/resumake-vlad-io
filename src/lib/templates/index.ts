@@ -19,6 +19,7 @@ import {
   TEMPLATE9
 } from './constants'
 import { FormValues, TemplateData } from '../../types'
+import { sanitize } from '../sanitize'
 
 /**
  * Generates the LaTeX document based on the selected template
@@ -28,7 +29,9 @@ import { FormValues, TemplateData } from '../../types'
  *
  * @return The generated LaTeX document as well as its additional opts.
  */
-export default function getTemplateData(data: FormValues): TemplateData {
+export default function getTemplateData(rawData: FormValues): TemplateData {
+  const data = sanitize(rawData)
+
   switch (data.selectedTemplate) {
     case TEMPLATE1:
       return {
