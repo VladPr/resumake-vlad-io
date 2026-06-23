@@ -3,6 +3,7 @@ import { useState, useCallback } from 'react'
 import { pdfjs, Document, Page } from 'react-pdf'
 import type { PDFDocumentProxy } from 'pdfjs-dist/types/src/display/api'
 import styled from 'styled-components'
+import { MdPictureAsPdf, MdCode, MdDataObject } from 'react-icons/md'
 import { resumeAtom } from '../../atoms/resume'
 import { MiniButton } from '../core/Button'
 import getTemplateData from '../../lib/templates'
@@ -22,6 +23,16 @@ const Toolbar = styled.div`
   gap: 8px;
   padding: 8px;
   flex-wrap: wrap;
+`
+
+const ExportButton = styled(MiniButton)`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  svg {
+    font-size: 1.15em;
+  }
 `
 
 function downloadFile(filename: string, content: string, type: string) {
@@ -97,11 +108,15 @@ export function Preview() {
   return (
     <Output>
       <Toolbar>
-        <MiniButton onClick={exportPdf} disabled={!resume.url}>
-          export as pdf
-        </MiniButton>
-        <MiniButton onClick={exportTex}>export as tex</MiniButton>
-        <MiniButton onClick={exportJson}>export as json</MiniButton>
+        <ExportButton onClick={exportPdf} disabled={!resume.url}>
+          <MdPictureAsPdf /> export as pdf
+        </ExportButton>
+        <ExportButton onClick={exportTex}>
+          <MdCode /> export as tex
+        </ExportButton>
+        <ExportButton onClick={exportJson}>
+          <MdDataObject /> export as json
+        </ExportButton>
       </Toolbar>
       <PdfContainer>
         <ResumeDocument
