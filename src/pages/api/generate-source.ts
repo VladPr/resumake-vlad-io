@@ -1,3 +1,4 @@
+import path from 'path'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import Archiver from 'archiver'
 import { stripIndent } from 'common-tags'
@@ -38,7 +39,11 @@ function generateSourceCode(formData: FormValues) {
   zip.append(readme, { name: 'README.md' })
 
   if (opts.inputs) {
-    zip.directory(opts.inputs, '../')
+    for (const input of opts.inputs) {
+      zip.file(path.join(process.cwd(), 'public', input), {
+        name: path.basename(input)
+      })
+    }
   }
 
   zip.finalize()
