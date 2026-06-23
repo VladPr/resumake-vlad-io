@@ -6,6 +6,13 @@ const xetex = new XeTeXEngine()
 const dvipdfmx = new DvipdfmxEngine()
 let engineLoaded = false
 
+// SwiftLaTeX streams its format file and LaTeX packages on demand from a
+// TeXLive endpoint. The upstream public server (texlive2.swiftlatex.com) is
+// offline, so point at a locally hosted TeXLive on-demand server instead.
+// Override with NEXT_PUBLIC_TEXLIVE_ENDPOINT if hosting it elsewhere.
+const TEXLIVE_ENDPOINT =
+  process.env.NEXT_PUBLIC_TEXLIVE_ENDPOINT || 'http://localhost:8088'
+
 export default async function latex(texDoc: string, opts: LaTeXOpts) {
   if (!engineLoaded) {
     await Promise.all([
@@ -14,6 +21,12 @@ export default async function latex(texDoc: string, opts: LaTeXOpts) {
       dvipdfmx.loadEngine()
     ])
     engineLoaded = true
+
+    await Promise.all([
+      pdftex.setTexliveEndpoint(`${TEXLIVE_ENDPOINT}/pdftex/`),
+      xetex.setTexliveEndpoint(`${TEXLIVE_ENDPOINT}/xetex/`),
+      dvipdfmx.setTexliveEndpoint(`${TEXLIVE_ENDPOINT}/xetex/`)
+    ])
 
     await pdftex.makeMemFSFolder('fonts/')
     await xetex.makeMemFSFolder('fonts/')

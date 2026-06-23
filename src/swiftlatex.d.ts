@@ -14,6 +14,7 @@ declare module 'swiftlatex' {
       content: string | Uint8Array
     ): Promise<void>
     setEngineMainFile(filename: string): Promise<void>
+    setTexliveEndpoint(url: string): Promise<void>
     compileLaTeX(): Promise<CompileResult>
     compilePDF(): Promise<CompileResult>
     flushCache(): void

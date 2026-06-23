@@ -1,0 +1,30 @@
+# Native arm64 build of the SwiftLaTeX TeXLive on-demand server.
+# Compiles the pykpathsea bindings from source instead of using the
+# committed x86_64 .so files, so it runs natively (no emulation).
+#
+# Base must be ubuntu:20.04: its TeXLive (2019/2020) matches the bundled
+# swiftlatex*.fmt format files. Newer bases (22.04+) renamed l3backend
+# files (l3backend-pdfmode.def -> l3backend-pdftex.def) and break the .fmt.
+FROM ubuntu:20.04
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -q -y \
+    texlive-full \
+    python3 \
+    python3-pip \
+    python3-dev \
+    libkpathsea-dev \
+    build-essential \
+    libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
+COPY . /app
+WORKDIR /app
+# Drop the prebuilt x86_64 bindings and compile native ones.
+RUN rm -f pykpathsea_pdftex*.so pykpathsea_xetex*.so && \
+    python3 -m pip install --upgrade pip && \
+    python3 -m pip install "Cython<3" && \
+    python3 kpathsea_pdftex_setup.py build_ext --inplace && \
+    python3 kpathsea_xetex_setup.py build_ext --inplace && \
+    python3 -m pip install --no-binary gevent --no-build-isolation -r requirements.txt
+# Allow the local dev frontend (and any origin) to fetch packages.
+ENV API_ORIGINS=*
+CMD ["python3", "wsgi.py"]
