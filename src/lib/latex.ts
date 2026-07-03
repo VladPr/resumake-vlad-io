@@ -13,7 +13,27 @@ let engineLoaded = false
 const TEXLIVE_ENDPOINT =
   process.env.NEXT_PUBLIC_TEXLIVE_ENDPOINT || 'http://localhost:8088'
 
-export default async function latex(texDoc: string, opts: LaTeXOpts) {
+// The SwiftLaTeX engines are singletons and can only compile one document at a
+// time; a second call while one is in flight throws "Engine is still spinning
+// or not ready yet!". Serialize every compile through a promise chain so
+// callers (e.g. rendering all templates on MAKE) can fire in a loop safely.
+let compileQueue: Promise<unknown> = Promise.resolve()
+
+export default function latex(
+  texDoc: string,
+  opts: LaTeXOpts
+): Promise<string> {
+  const run = () => compile(texDoc, opts)
+  const result = compileQueue.then(run, run)
+  // Keep the chain alive regardless of whether this compile resolved or threw.
+  compileQueue = result.then(
+    () => undefined,
+    () => undefined
+  )
+  return result
+}
+
+async function compile(texDoc: string, opts: LaTeXOpts) {
   if (!engineLoaded) {
     await Promise.all([
       pdftex.loadEngine(),

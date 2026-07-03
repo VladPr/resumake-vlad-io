@@ -1,29 +1,27 @@
-import { useFormContext, Controller } from 'react-hook-form'
+import { useAtom } from 'jotai'
 
 import { FormSection } from './FormSection'
 import { TEMPLATES } from '../../../../lib/templates/constants'
-
-import { FormValues } from '../../../../types'
+import { selectedTemplateAtom } from '../../../../atoms/resume'
 
 export function TemplatesSection() {
-  const { control } = useFormContext<FormValues>()
+  const [selectedTemplate, setSelectedTemplate] = useAtom(selectedTemplateAtom)
 
   return (
     <FormSection title="Choose a Template">
+      <p style={{ opacity: 0.7, marginBottom: 12 }}>
+        Pick one here, or tap <strong>MAKE</strong> to preview your resume in
+        every template and choose from the gallery.
+      </p>
       {TEMPLATES.map((templateId) => (
         <label key={templateId} style={{ display: 'inline-block', padding: 8 }}>
           Template {templateId}
-          <Controller
-            control={control}
+          <input
+            type="radio"
             name="selectedTemplate"
-            render={({ field }) => (
-              <input
-                type="radio"
-                onChange={(e) => field.onChange(Number(e.target.value))}
-                value={templateId}
-                checked={field.value === templateId}
-              />
-            )}
+            value={templateId}
+            checked={selectedTemplate === templateId}
+            onChange={(e) => setSelectedTemplate(Number(e.target.value))}
           />
         </label>
       ))}

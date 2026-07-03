@@ -161,12 +161,12 @@ const generator: Generator = {
 
     return source`
       \\header{${heading || 'Skills'}}
-      \\begin{tabular}{ l l }
+      \\begin{tabularx}{\\textwidth}{@{}l >{\\raggedright\\arraybackslash}X@{}}
       ${skills.map((skill) => {
         const { name = 'Misc', keywords = [] } = skill
         return `${name}: & ${keywords.join(', ')} \\\\`
       })}
-      \\end{tabular}
+      \\end{tabularx}
       \\vspace{2mm}
     `
   },
@@ -323,6 +323,8 @@ function template1(values: FormValues) {
     \\usepackage{amsmath}
     \\usepackage{amssymb}
     \\usepackage{textcomp}
+    \\usepackage{array}
+    \\usepackage{tabularx}
     \\usepackage[utf8]{inputenc}
     \\usepackage[T1]{fontenc}
     \\textheight=10in

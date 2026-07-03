@@ -23,7 +23,7 @@ const generator: Generator = {
   },
 
   educationSection(education, heading) {
-    if (!education) {
+    if (!education || education.length === 0) {
       return ''
     }
 
@@ -87,7 +87,7 @@ const generator: Generator = {
   },
 
   workSection(work, heading) {
-    if (!work) {
+    if (!work || work.length === 0) {
       return ''
     }
 
@@ -133,7 +133,7 @@ const generator: Generator = {
   },
 
   skillsSection(skills, heading) {
-    if (!skills) {
+    if (!skills || skills.length === 0) {
       return ''
     }
 
@@ -152,7 +152,7 @@ const generator: Generator = {
   },
 
   projectsSection(projects, heading) {
-    if (!projects) {
+    if (!projects || projects.length === 0) {
       return ''
     }
 
@@ -183,7 +183,7 @@ const generator: Generator = {
   },
 
   awardsSection(awards, heading) {
-    if (!awards) {
+    if (!awards || awards.length === 0) {
       return ''
     }
 

@@ -209,12 +209,12 @@ const generator: Generator = {
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       \\section{${heading || 'Skills'}}
       \\raggedright
-      \\begin{tabular}{ l l }
+      \\begin{tabularx}{\\linewidth}{@{}l >{\\raggedright\\arraybackslash}X@{}}
       ${skills.map((skill) => {
         const { name = '', keywords = [] } = skill
         return `\\descript{${name}} & {\\location{${keywords.join(', ')}}} \\\\`
       })}
-      \\end{tabular}
+      \\end{tabularx}
       \\sectionsep
     `
   },
@@ -354,6 +354,8 @@ function template4(values: FormValues) {
   return stripIndent`
     ${generator.resumeHeader()}
     \\documentclass[]{deedy-resume-openfont}
+    \\usepackage{array}
+    \\usepackage{tabularx}
 
     \\begin{document}
     ${values.sections
