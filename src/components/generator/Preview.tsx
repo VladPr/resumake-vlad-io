@@ -152,15 +152,9 @@ function PreviewCard({
   onSelect: (preview: TemplatePreview) => void
 }) {
   return (
-    <Card
-      type="button"
-      selected={selected}
-      onClick={() => onSelect(preview)}
-    >
+    <Card type="button" selected={selected} onClick={() => onSelect(preview)}>
       <Thumb>
-        {preview.status === 'loading' && (
-          <Placeholder>Rendering…</Placeholder>
-        )}
+        {preview.status === 'loading' && <Placeholder>Rendering…</Placeholder>}
         {preview.status === 'error' && (
           <Placeholder>Preview unavailable</Placeholder>
         )}

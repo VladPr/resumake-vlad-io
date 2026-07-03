@@ -19,7 +19,10 @@ const TEXLIVE_ENDPOINT =
 // callers (e.g. rendering all templates on MAKE) can fire in a loop safely.
 let compileQueue: Promise<unknown> = Promise.resolve()
 
-export default function latex(texDoc: string, opts: LaTeXOpts): Promise<string> {
+export default function latex(
+  texDoc: string,
+  opts: LaTeXOpts
+): Promise<string> {
   const run = () => compile(texDoc, opts)
   const result = compileQueue.then(run, run)
   // Keep the chain alive regardless of whether this compile resolved or threw.

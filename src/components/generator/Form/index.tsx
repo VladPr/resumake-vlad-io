@@ -97,7 +97,10 @@ export function Form() {
       let url = previewCache.get(cacheKey) || ''
       if (!url) {
         try {
-          url = await generateResume({ ...baseValues, selectedTemplate: template })
+          url = await generateResume({
+            ...baseValues,
+            selectedTemplate: template
+          })
           previewCache.set(cacheKey, url)
         } catch (error) {
           console.error(`Template ${template} failed to render`, error)
@@ -113,15 +116,15 @@ export function Form() {
       setResume((prev) => ({
         ...prev,
         previews: prev.previews.map((p) =>
-          p.template === template
-            ? { ...p, url, status: 'done' as const }
-            : p
+          p.template === template ? { ...p, url, status: 'done' as const } : p
         )
       }))
     }
 
     setResume((prev) => {
-      const selected = prev.previews.find((p) => p.template === selectedTemplate)
+      const selected = prev.previews.find(
+        (p) => p.template === selectedTemplate
+      )
       return { ...prev, url: selected?.url || '', isLoading: false }
     })
   }, [formContext, selectedTemplate, setResume])
