@@ -35,7 +35,22 @@ export function sanitize<T>(value: T): T {
   if (value !== null && typeof value === 'object') {
     const out: Record<string, unknown> = {}
     for (const [key, val] of Object.entries(value)) {
-      out[key] = sanitize(val)
+      const sanitized = sanitize(val)
+      // An empty content array (e.g. `awards: []`) means the section has no
+      // entries. Drop it so template guards (`if (!awards)`) skip the section
+      // instead of emitting an empty LaTeX environment like
+      // `\begin{itemize}\end{itemize}`, which is a fatal compile error
+      // ("Something's wrong--perhaps a missing \item"). Destructuring defaults
+      // (`const { keywords = [] }`) restore [] for nested arrays that are read.
+      // `sections` is exempt: it drives the render loop and is never empty.
+      if (
+        Array.isArray(sanitized) &&
+        sanitized.length === 0 &&
+        key !== 'sections'
+      ) {
+        continue
+      }
+      out[key] = sanitized
     }
     return out as T
   }

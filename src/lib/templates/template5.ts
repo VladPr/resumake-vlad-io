@@ -161,12 +161,12 @@ const generator: Omit<Generator, 'resumeHeader'> = {
 
     return source`
       \\section{${heading || 'SKILLS'}}
-      \\begin{tabular}{@{}ll}
+      \\begin{tabularx}{\\linewidth}{@{}l >{\\raggedright\\arraybackslash}X@{}}
       ${skills.map((skill) => {
         const { name, keywords = [] } = skill
         return `\\textbf{${name || ''}}: & ${keywords.join(', ') || ''}\\\\`
       })}
-      \\end{tabular}
+      \\end{tabularx}
     `
   },
 
@@ -238,6 +238,8 @@ function template5(values: FormValues) {
     \\usepackage{textcomp}
     \\usepackage[utf8]{inputenc}
     \\usepackage[T1]{fontenc}
+    \\usepackage{array}
+    \\usepackage{tabularx}
     \\usepackage[hidelinks]{hyperref}
     \\begin{document}
       ${generator.profileSection(values.basics)}

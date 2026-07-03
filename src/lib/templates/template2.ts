@@ -159,22 +159,12 @@ const generator: Generator = {
 
     return source`
       \\cvsection{${heading || 'Skills'}}
-      \\begin{cventries}
-      \\cventry
-      {}
-      {\\def\\arraystretch{1.15}{\\begin{tabular}{ l l }
+      \\begin{cvskills}
       ${skills.map((skill) => {
         const { name, keywords = [] } = skill
-        const nameLine = name ? `${name}: ` : ''
-        const detailsLine = `{\\skill{ ${keywords.join(', ') || ''}}}`
-
-        return `${nameLine} & ${detailsLine} \\\\`
+        return `\\cvskill{${name || ''}}{${keywords.join(', ') || ''}}`
       })}
-      \\end{tabular}}}
-      {}
-      {}
-      {}
-      \\end{cventries}
+      \\end{cvskills}
 
       \\vspace{-7mm}
     `
