@@ -98,14 +98,8 @@ const generator: Generator = {
       \\NewPart{${heading || 'Experience'}}{}
 
       ${work.map((job, i) => {
-        const {
-          name,
-          position,
-          location,
-          startDate,
-          endDate = '',
-          highlights
-        } = job
+        const { position, location, startDate, endDate = '', highlights } = job
+        const name = job.name || job.company
 
         const nameLine = [name, location].filter(Boolean).join(', ')
         let dateRange = ''

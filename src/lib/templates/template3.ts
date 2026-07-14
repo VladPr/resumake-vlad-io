@@ -97,7 +97,8 @@ const generator: Generator = {
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       \\begin{itemize}[leftmargin=*]
       ${work.map((job) => {
-        const { name, position, location, startDate, endDate, highlights } = job
+        const { position, location, startDate, endDate, highlights } = job
+        const name = job.name || job.company
 
         let dateRange
         let dutyLines

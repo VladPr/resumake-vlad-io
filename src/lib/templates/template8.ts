@@ -96,14 +96,8 @@ const generator: Generator = {
     return source`
       \\begin{cvsection}{${heading || 'Experience'}}
       ${work.map((job) => {
-        const {
-          name,
-          position,
-          location,
-          startDate,
-          endDate = '',
-          highlights
-        } = job
+        const { position, location, startDate, endDate = '', highlights } = job
+        const name = job.name || job.company
 
         let dateRange = ''
         let highlightLines = ''
