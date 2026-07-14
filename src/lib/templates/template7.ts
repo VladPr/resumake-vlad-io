@@ -74,13 +74,13 @@ const generator: Generator = {
       \\section{${heading || 'Experience'}}
       ${work.map((job) => {
         const {
-          name,
           position,
           location,
           startDate,
           endDate = '',
           highlights
         } = job
+        const name = job.name || job.company
 
         let dateRange = ''
         let highlightLines = ''
